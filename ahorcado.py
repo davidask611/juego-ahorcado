@@ -115,7 +115,8 @@ def siguiente_palabra_o_tema():
     global palabra_secreta, letras_adivinadas, letras_incorrectas, tema_actual
 
     print(f"Tema actual antes de procesar: {tema_actual}")
-    print(f"Palabras restantes en el tema actual: {temas_palabras[tema_actual]}")
+    print(
+        f"Palabras restantes en el tema actual: {temas_palabras[tema_actual]}")
 
     # Elegir otra palabra del mismo tema si hay palabras disponibles
     if temas_palabras[tema_actual]:
@@ -130,15 +131,18 @@ def siguiente_palabra_o_tema():
         actualizar_interfaz()
         print("Se actualizó la interfaz con una nueva palabra.")
     else:
-        print(f"No quedan palabras en el tema actual: {tema_actual}. Buscando otro tema.")
-        temas_disponibles = [tema for tema, palabras in temas_palabras.items() if len(palabras) > 0]
+        print(
+            f"No quedan palabras en el tema actual: {tema_actual}. Buscando otro tema.")
+        temas_disponibles = [
+            tema for tema, palabras in temas_palabras.items() if len(palabras) > 0]
         print(f"Temas disponibles: {temas_disponibles}")
 
         if temas_disponibles:
             tema_actual = random.choice(temas_disponibles)
             print(f"Nuevo tema seleccionado: {tema_actual}")
 
-            palabra_secreta = random.choice(temas_palabras[tema_actual]).upper()
+            palabra_secreta = random.choice(
+                temas_palabras[tema_actual]).upper()
             temas_palabras[tema_actual].remove(palabra_secreta)
             letras_adivinadas = ["_"] * len(palabra_secreta)
             letras_incorrectas = []
@@ -147,9 +151,12 @@ def siguiente_palabra_o_tema():
             actualizar_interfaz()
         else:
             print("No hay más temas disponibles.")
-            resultado_label.config(text="¡No quedan palabras en ningún tema \nSuperaste todas felicidades!")
+            resultado_label.config(
+                text="¡No quedan palabras en ningún tema \nSuperaste todas felicidades!")
             entry_letra.config(state='disabled')
             boton_adivinar.config(state='disabled')
+            # global tiempo_restante
+            # tiempo_restante = 0
 
 
 def mensaje_temporal(mensaje):
@@ -169,7 +176,8 @@ def adivinar_letra():
 
     # Validar que solo se ingrese una letra y que sea una letra válida
     if len(letra) != 1 or not letra.isalpha():
-        resultado_label.config(text="Por favor, ingresa solo una letra válida.")
+        resultado_label.config(
+            text="Por favor, ingresa solo una letra válida.")
         return
 
     if letra in palabra_secreta:
@@ -181,7 +189,6 @@ def adivinar_letra():
             letras_incorrectas.append(letra)
 
     actualizar_interfaz()
-
 
 
 # Copia de respaldo de las palabras originales
