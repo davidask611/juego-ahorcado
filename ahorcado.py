@@ -4,10 +4,10 @@ import tkinter.messagebox
 
 # Lista de palabras por temas
 temas_palabras = {
-    "Animales": ["TIGRE", "LEON", "ELEFANTE", "DELFIN", "CABALLO", "CEBRA"],
-    "Frutas": ["MANZANA", "BANANA", "FRUTILLA", "MANGO", "KIWI", "MANDARINA"],
-    "Paises": ["ARGENTINA", "MEXICO", "CANADA", "JAPON", "BRAZIL"],
-    "Dioses": ["LUCIFER", "AMENADIEL", "AZRAEL", "MICHAEL", "GABRIEL"]
+    "Animales": ["TIGRE", "LEON", "ELEFANTE"],
+    "Frutas": ["MANZANA", "BANANA", "FRUTILLA"],
+    "Paises": ["ARGENTINA", "MEXICO"],
+    "Dioses": ["LUCIFER", "AMENADIEL"]
 }
 
 tema_actual = "Frutas"  # Tema por defecto
@@ -42,6 +42,24 @@ def dibujar_muneco(canvas, errores):
         canvas.create_line(100, 200, 130, 250, fill="green",
                            width=3)  # Pierna derecha
 
+
+def actualizar_palabras_ganadas():
+    global widgets_palabras
+
+    # Limpiar widgets previos
+    for widget in widgets_palabras:
+        widget.destroy()
+    widgets_palabras.clear()
+
+    # Agregar cada palabra como un ítem en la lista
+    for palabra in palabras_ganadas:
+        palabra_item = tk.Label(frame_interno_palabras, text=f"- {palabra}", font=(
+            "Arial", 12), bg="white", fg="blue", anchor="w", justify="left", wraplength=150)
+        palabra_item.pack(anchor="w", padx=5, pady=2)
+        widgets_palabras.append(palabra_item)
+
+    ajustar_scroll()  # Ajustar el scroll por si se desborda
+
 # Función para actualizar la interfaz
 
 
@@ -72,6 +90,9 @@ def actualizar_interfaz():
 
         # Actualizar la lista de palabras ganadas en la interfaz
         actualizar_palabras_ganadas()
+
+        if palabra_secreta in temas_palabras[tema_actual]:
+            temas_palabras[tema_actual].remove(palabra_secreta)
 
         # Añadir 30 segundos extra
         tiempo_restante += 30
@@ -152,19 +173,24 @@ def reiniciar_juego():
     palabras_ganadas.clear()
     actualizar_palabras_ganadas()
 
-    # Verificar si ya no hay palabras en el tema actual
-    if not temas_palabras[tema_actual]:  # Si el tema actual ya no tiene palabras
-        # Cambiar al siguiente tema disponible
+    if not temas_palabras[tema_actual]:
         temas_disponibles = [tema for tema,
                              palabras in temas_palabras.items() if palabras]
         if temas_disponibles:
             tema_actual = random.choice(temas_disponibles)
         else:
-            # Si no hay más temas, elegir uno al azar
-            tema_actual = random.choice(list(temas_palabras.keys()))
+            resultado_label.config(
+                text="¡No quedan palabras en ningún tema \nSuperaste todas felicidades!")
+            entry_letra.config(state='disabled')
+            boton_adivinar.config(state='disabled')
+            return
 
-    # Elegir una palabra aleatoria del tema actual y reiniciar las variables
-    palabra_secreta = random.choice(temas_palabras[tema_actual]).upper()
+    # Seleccionar una palabra aleatoria del tema actual que no esté en palabras_ganadas
+    palabra_secreta = random.choice(temas_palabras[tema_actual])
+    while palabra_secreta in palabras_ganadas and temas_palabras[tema_actual]:
+        palabra_secreta = random.choice(temas_palabras[tema_actual])
+
+    # Reiniciar las variables de juego
     letras_adivinadas = ["_"] * len(palabra_secreta)
     letras_incorrectas = []
     tiempo_restante = 300
@@ -178,9 +204,6 @@ def reiniciar_juego():
     # Agregar la palabra ganada a la lista de palabras ganadas (si no está ya en la lista)
     if palabra_secreta not in palabras_ganadas:
         palabras_ganadas.append(palabra_secreta)
-
-    # Restaurar las palabras ya usadas al tema (si es necesario)
-    temas_palabras[tema_actual].append(palabra_secreta)
 
     # Actualizar la interfaz
     actualizar_interfaz()
@@ -277,24 +300,6 @@ frame_interno_palabras.bind("<Configure>", ajustar_scroll)
 widgets_palabras = []
 
 # Función para actualizar la lista de palabras ganadas
-
-
-def actualizar_palabras_ganadas():
-    global widgets_palabras
-
-    # Limpiar widgets previos
-    for widget in widgets_palabras:
-        widget.destroy()
-    widgets_palabras.clear()
-
-    # Agregar cada palabra como un ítem en la lista
-    for palabra in palabras_ganadas:
-        palabra_item = tk.Label(frame_interno_palabras, text=f"- {palabra}", font=(
-            "Arial", 12), bg="white", fg="blue", anchor="w", justify="left", wraplength=150)
-        palabra_item.pack(anchor="w", padx=5, pady=2)
-        widgets_palabras.append(palabra_item)
-
-    ajustar_scroll()  # Ajustar el scroll por si se desborda
 
 
 # Etiqueta para mostrar los puntos
