@@ -147,7 +147,7 @@ def siguiente_palabra_o_tema():
             actualizar_interfaz()
         else:
             print("No hay más temas disponibles.")
-            resultado_label.config(text="¡Completaste todos los temas!")
+            resultado_label.config(text="¡No quedan palabras en ningún tema \nSuperaste todas felicidades!")
             entry_letra.config(state='disabled')
             boton_adivinar.config(state='disabled')
 
