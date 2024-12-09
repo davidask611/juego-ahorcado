@@ -46,7 +46,8 @@ def dibujar_muneco(canvas, errores):
 
 
 def actualizar_interfaz():
-    global tiempo_restante, tema_actual, palabra_secreta, letras_adivinadas, letras_incorrectas  # Declarar la variable global
+    # Declarar la variable global
+    global tiempo_restante, tema_actual, palabra_secreta, letras_adivinadas, letras_incorrectas
 
     tema_label.config(text=f"Tema elegido: {tema_actual}")
     palabra_label.config(text=" ".join(letras_adivinadas))
@@ -57,7 +58,7 @@ def actualizar_interfaz():
     # Si adivinó toda la palabra
     if "_" not in letras_adivinadas:
         resultado_label.config(
-            text="¡Ganaste! La palabra es: " + palabra_secreta)
+            text=f"¡Ganaste! La palabra es: {palabra_secreta}")
         entry_letra.config(state='disabled')
         boton_adivinar.config(state='disabled')
 
@@ -76,20 +77,12 @@ def actualizar_interfaz():
         tiempo_restante += 30
         mensaje_temporal("¡Ganaste 30 segundos más!")
 
-        # Elegir otra palabra del mismo tema si hay palabras disponibles
-        if temas_palabras[tema_actual]:
-            palabra_secreta = random.choice(temas_palabras[tema_actual]).upper()
-            letras_adivinadas = ["_"] * len(palabra_secreta)
-            letras_incorrectas = []
-            entry_letra.config(state='normal')
-            boton_adivinar.config(state='normal')
-            actualizar_interfaz()  # Actualizar la interfaz con la nueva palabra
-        else:
-            # Si el tema se quedó sin palabras, cambiar a otro tema con palabras disponibles
-            temas_disponibles = [tema for tema, palabras in temas_palabras.items() if palabras]
-            if temas_disponibles:
-                tema_actual = random.choice(temas_disponibles)
-                reiniciar_juego()  # Seleccionar palabra del nuevo tema
+        # Mostrar el mensaje temporal y pasar a la siguiente palabra después de 2 segundos
+        root.after(2000, lambda: resultado_label.config(
+            text=""))  # Eliminar mensaje
+        # Cambiar palabra o tema
+        root.after(2000, lambda: siguiente_palabra_o_tema())
+
     elif len(letras_incorrectas) >= intentos:
         resultado_label.config(
             text="¡Perdiste! La palabra era: " + palabra_secreta)
@@ -97,6 +90,28 @@ def actualizar_interfaz():
         boton_adivinar.config(state='disabled')
 
 
+def siguiente_palabra_o_tema():
+    global palabra_secreta, letras_adivinadas, letras_incorrectas, tema_actual
+
+    # Elegir otra palabra del mismo tema si hay palabras disponibles
+    if temas_palabras[tema_actual]:
+        palabra_secreta = random.choice(temas_palabras[tema_actual]).upper()
+        letras_adivinadas = ["_"] * len(palabra_secreta)
+        letras_incorrectas = []
+        entry_letra.config(state='normal')
+        boton_adivinar.config(state='normal')
+        actualizar_interfaz()  # Actualizar la interfaz con la nueva palabra
+    else:
+        # Si el tema se quedó sin palabras, cambiar a otro tema con palabras disponibles
+        temas_disponibles = [tema for tema,
+                             palabras in temas_palabras.items() if palabras]
+        if temas_disponibles:
+            tema_actual = random.choice(temas_disponibles)
+            reiniciar_juego()  # Seleccionar palabra del nuevo tema
+        else:
+            resultado_label.config(text="¡No quedan palabras en ningún tema!")
+            entry_letra.config(state='disabled')
+            boton_adivinar.config(state='disabled')
 
 
 def mensaje_temporal(mensaje):
