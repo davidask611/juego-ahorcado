@@ -4,11 +4,89 @@ import tkinter.messagebox
 
 # Lista de palabras por temas
 temas_palabras = {
-    "Animales": ["TIGRE", "LEON", "ELEFANTE"],
-    "Dioses": ["LUCIFER", "AMENADIEL"],
-    "Frutas": ["MANZANA", "BANANA", "FRUTILLA"],
-    "Paises": ["ARGENTINA", "MEXICO"]
+    # Temas existentes
+    "Animales": [
+        "TIGRE", "LEON", "ELEFANTE", "JIRAFA", "CANGURO",
+        "OSO", "LOBO", "SERPIENTE", "AGUILA", "PANTERA",
+        "CEBRA", "RINOCERONTE", "KOALA", "CASTOR", "ZORRO",
+        "GORILA", "BUITRE", "DELFIN", "BALLENA", "PINGÜINO"
+    ],
+    "Dioses": [
+        "ZEUS", "HERA", "POSEIDON", "ARES", "AFRODITA",
+        "APOLO", "ARTEMISA", "ATENEA", "HADES", "DEMETER",
+        "HEFESTO", "DIONISO", "ODIN", "THOR", "LOKI",
+        "FREYA", "TYR", "HEIMDALL", "BALDER", "HEL"
+    ],
+    "Frutas": [
+        "MANZANA", "BANANA", "FRUTILLA", "PERA", "DURAZNO",
+        "CEREZA", "KIWI", "UVA", "CIRUELA", "MANGO",
+        "PAPAYA", "GUAYABA", "LIMON", "NARANJA", "POMELO",
+        "SANDIA", "MELON", "ARANDANO", "FRAMBUESA", "GRANADA"
+    ],
+    "Paises": [
+        "ARGENTINA", "MEXICO", "BRASIL", "CANADA", "ITALIA",
+        "CHILE", "COLOMBIA", "ALEMANIA", "ESPAÑA", "FRANCIA",
+        "CHINA", "JAPON", "INDIA", "AUSTRALIA", "RUSIA",
+        "EGIPTO", "TURQUIA", "NORUEGA", "SUECIA", "PORTUGAL"
+    ],
+    "Provincias": [
+        "CORDOBA", "MENDOZA", "SALTA", "JUJUY", "CHACO",
+        "FORMOSA", "CORRIENTES", "NEUQUEN",
+        "CATAMARCA", "CHUBUT", "JUJUY"
+    ],
+    "Nombres": [
+        "LUCAS", "PABLO", "JUAN", "MATEO", "DIEGO",
+        "MARTIN", "NICOLAS", "JAVIER", "ANDRES", "CARLOS",
+        "DANIEL", "ALEJANDRO", "GABRIEL", "FACUNDO", "TOMAS"
+    ],
+    "Angeles": [
+        "LUCIFER", "AMENADIEL", "GABRIEL", "RAFAEL", "URIEL",
+        "METATRON", "SAMAEL", "AZRAEL", "CASSIEL", "RAGUEL",
+        "REMIEL", "SARIEL", "JOPHIEL", "ZADKIEL", "HANIEL"
+    ],
+    "Razas": [
+        "PITBULL", "DOBERMAN", "BEAGLE", "HUSKY", "BULLDOG",
+        "BOXER", "LABRADOR", "POODLE", "CHIHUAHUA", "DACHSHUND",
+        "CORGI", "MALAMUTE", "DALMATIAN", "AKITA", "TERRIER"
+    ],
+    "ColoresEnIngles": [
+        "RED", "BLUE", "GREEN", "YELLOW", "BLACK",
+        "WHITE", "ORANGE", "PINK", "PURPLE", "BROWN",
+        "GRAY", "CYAN", "TEAL", "GOLD", "SILVER"
+    ],
+    "NumerosEnIngles": [
+        "ONE", "TWO", "THREE", "FOUR", "FIVE",
+        "SIX", "SEVEN", "EIGHT", "NINE", "TEN",
+        "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN",
+        "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN", "TWENTY"
+    ],
+    "Objetos": [
+        "LAPIZ", "CUADERNO", "MESA", "SILLA", "TELEFONO",
+        "LAMPARA", "ESPEJO", "RELOJ", "CORTINA", "PUERTA",
+        "TELEVISION", "PLATO", "VASO", "CUCHILLO", "ZAPATO"
+    ],
+    "Profesiones": [
+        "DOCTOR", "INGENIERO", "MECANICO", "POLICIA", "CHEF",
+        "ABOGADO", "FOTOGRAFO", "ARTISTA", "ESCRITOR", "PROFESOR",
+        "PILOTO", "ENFERMERO", "ACTOR", "CANTANTE", "FARMACEUTICO"
+    ],
+    "Cuerpo": [
+        "CABEZA", "BRAZO", "PIERNA", "CORAZON", "MANO",
+        "PIE", "OREJA", "OJO", "BOCA", "NARIZ",
+        "PECHO", "HUESO", "CEREBRO", "PELO", "DIENTE"
+    ],
+    "Marcas": [
+        "NIKE", "ADIDAS", "TESLA", "APPLE", "SAMSUNG",
+        "SONY", "TOYOTA", "HONDA", "AMAZON", "MICROSOFT",
+        "COCA", "PEPSI", "BURGER", "DISNEY", "NETFLIX"
+    ],
+    "Ciudades": [
+        "PARIS", "LONDRES", "TOKYO", "ROMA", "BERLIN",
+        "DUBAI", "MOSCU", "MADRID", "SIDNEY", "MIAMI",
+        "CHICAGO", "SEUL", "DELHI", "OSLO", "DUBLIN"
+    ]
 }
+
 
 tema_actual = "Animales"  # Tema por defecto
 palabra_secreta = random.choice(temas_palabras[tema_actual]).upper()
@@ -384,7 +462,6 @@ def reiniciar_juego_completo():
     global tiempo_restante
     tiempo_restante = 300
     reiniciar_juego()  # Llamar a la función que reinicia el juego
-
 
 
 menu_bar.add_command(label="Reiniciar", command=reiniciar_juego_completo)
