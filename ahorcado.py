@@ -377,13 +377,14 @@ menu_bar.add_cascade(label="Temas", menu=tema_menu)
 def reiniciar_juego_completo():
     global palabras_ganadas
     palabras_ganadas.clear()  # Limpiar la lista de palabras ganadas
-    # Reiniciar los puntos
+    actualizar_palabras_ganadas()  # Actualizar la interfaz para reflejar la lista vacía
     global puntos
     puntos = 0
     puntos_label.config(text="Puntos totales: 0")
     global tiempo_restante
     tiempo_restante = 300
     reiniciar_juego()  # Llamar a la función que reinicia el juego
+
 
 
 menu_bar.add_command(label="Reiniciar", command=reiniciar_juego_completo)
