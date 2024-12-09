@@ -176,10 +176,7 @@ def reiniciar_juego():
     puntos = 0
     puntos_label.config(text="Puntos totales: 0")
 
-    # Limpiar lista de palabras ganadas
-    palabras_ganadas.clear()
-    actualizar_palabras_ganadas()
-
+    # Si no hay palabras en el tema actual, seleccionar otro tema
     if not temas_palabras[tema_actual]:
         temas_disponibles = [tema for tema,
                              palabras in temas_palabras.items() if palabras]
@@ -216,6 +213,7 @@ def reiniciar_juego():
     for tema in temas_palabras:
         # Restaura las palabras originales
         temas_palabras[tema] = lista_original_palabras[tema][:]
+
     # Actualizar la interfaz
     actualizar_interfaz()
 
@@ -349,7 +347,16 @@ for tema in temas_palabras.keys():
     tema_menu.add_command(
         label=tema, command=lambda t=tema: seleccionar_tema(t))
 menu_bar.add_cascade(label="Temas", menu=tema_menu)
-menu_bar.add_command(label="Reiniciar", command=reiniciar_juego)
+
+
+def reiniciar_juego_completo():
+    global palabras_ganadas
+    palabras_ganadas.clear()  # Limpiar la lista de palabras ganadas
+    reiniciar_juego()  # Llamar a la función que reinicia el juego
+
+
+menu_bar.add_command(label="Reiniciar", command=reiniciar_juego_completo)
+
 root.config(menu=menu_bar)
 
 actualizar_interfaz()
