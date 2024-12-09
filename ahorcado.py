@@ -5,12 +5,12 @@ import tkinter.messagebox
 # Lista de palabras por temas
 temas_palabras = {
     "Animales": ["TIGRE", "LEON", "ELEFANTE"],
+    "Dioses": ["LUCIFER", "AMENADIEL"],
     "Frutas": ["MANZANA", "BANANA", "FRUTILLA"],
-    "Paises": ["ARGENTINA", "MEXICO"],
-    "Dioses": ["LUCIFER", "AMENADIEL"]
+    "Paises": ["ARGENTINA", "MEXICO"]
 }
 
-tema_actual = "Frutas"  # Tema por defecto
+tema_actual = "Animales"  # Tema por defecto
 palabra_secreta = random.choice(temas_palabras[tema_actual]).upper()
 letras_adivinadas = ["_"] * len(palabra_secreta)
 letras_incorrectas = []
@@ -114,23 +114,40 @@ def actualizar_interfaz():
 def siguiente_palabra_o_tema():
     global palabra_secreta, letras_adivinadas, letras_incorrectas, tema_actual
 
+    print(f"Tema actual antes de procesar: {tema_actual}")
+    print(f"Palabras restantes en el tema actual: {temas_palabras[tema_actual]}")
+
     # Elegir otra palabra del mismo tema si hay palabras disponibles
     if temas_palabras[tema_actual]:
         palabra_secreta = random.choice(temas_palabras[tema_actual]).upper()
+        print(f"Palabra secreta seleccionada: {palabra_secreta}")
+
+        temas_palabras[tema_actual].remove(palabra_secreta)
         letras_adivinadas = ["_"] * len(palabra_secreta)
         letras_incorrectas = []
         entry_letra.config(state='normal')
         boton_adivinar.config(state='normal')
-        actualizar_interfaz()  # Actualizar la interfaz con la nueva palabra
+        actualizar_interfaz()
+        print("Se actualizó la interfaz con una nueva palabra.")
     else:
-        # Si el tema se quedó sin palabras, cambiar a otro tema con palabras disponibles
-        temas_disponibles = [tema for tema,
-                             palabras in temas_palabras.items() if palabras]
+        print(f"No quedan palabras en el tema actual: {tema_actual}. Buscando otro tema.")
+        temas_disponibles = [tema for tema, palabras in temas_palabras.items() if len(palabras) > 0]
+        print(f"Temas disponibles: {temas_disponibles}")
+
         if temas_disponibles:
             tema_actual = random.choice(temas_disponibles)
-            reiniciar_juego()  # Seleccionar palabra del nuevo tema
+            print(f"Nuevo tema seleccionado: {tema_actual}")
+
+            palabra_secreta = random.choice(temas_palabras[tema_actual]).upper()
+            temas_palabras[tema_actual].remove(palabra_secreta)
+            letras_adivinadas = ["_"] * len(palabra_secreta)
+            letras_incorrectas = []
+            entry_letra.config(state='normal')  # Aseguramos habilitación
+            boton_adivinar.config(state='normal')  # Aseguramos habilitación
+            actualizar_interfaz()
         else:
-            resultado_label.config(text="¡No quedan palabras en ningún tema!")
+            print("No hay más temas disponibles.")
+            resultado_label.config(text="¡Completaste todos los temas!")
             entry_letra.config(state='disabled')
             boton_adivinar.config(state='disabled')
 
@@ -150,6 +167,11 @@ def adivinar_letra():
     letra = entry_letra.get().upper()
     entry_letra.delete(0, tk.END)
 
+    # Validar que solo se ingrese una letra y que sea una letra válida
+    if len(letra) != 1 or not letra.isalpha():
+        resultado_label.config(text="Por favor, ingresa solo una letra válida.")
+        return
+
     if letra in palabra_secreta:
         for i, l in enumerate(palabra_secreta):
             if l == letra:
@@ -161,6 +183,7 @@ def adivinar_letra():
     actualizar_interfaz()
 
 
+
 # Copia de respaldo de las palabras originales
 lista_original_palabras = {tema: palabras[:]
                            for tema, palabras in temas_palabras.items()}
@@ -170,11 +193,6 @@ lista_original_palabras = {tema: palabras[:]
 
 def reiniciar_juego():
     global palabra_secreta, letras_adivinadas, letras_incorrectas, tiempo_restante, tema_actual, palabras_ganadas
-
-    # Reiniciar los puntos
-    global puntos
-    puntos = 0
-    puntos_label.config(text="Puntos totales: 0")
 
     # Si no hay palabras en el tema actual, seleccionar otro tema
     if not temas_palabras[tema_actual]:
@@ -352,6 +370,12 @@ menu_bar.add_cascade(label="Temas", menu=tema_menu)
 def reiniciar_juego_completo():
     global palabras_ganadas
     palabras_ganadas.clear()  # Limpiar la lista de palabras ganadas
+    # Reiniciar los puntos
+    global puntos
+    puntos = 0
+    puntos_label.config(text="Puntos totales: 0")
+    global tiempo_restante
+    tiempo_restante = 300
     reiniciar_juego()  # Llamar a la función que reinicia el juego
 
 
