@@ -161,6 +161,13 @@ def adivinar_letra():
     actualizar_interfaz()
 
 
+# Copia de respaldo de las palabras originales
+lista_original_palabras = {tema: palabras[:]
+                           for tema, palabras in temas_palabras.items()}
+
+# Función para reiniciar el juego
+
+
 def reiniciar_juego():
     global palabra_secreta, letras_adivinadas, letras_incorrectas, tiempo_restante, tema_actual, palabras_ganadas
 
@@ -197,7 +204,7 @@ def reiniciar_juego():
     resultado_label.config(text="")
 
     # Restablecer el muñeco
-    canvas.delete("all")  # Borrar el muñeco
+    canvas.delete("all")
     entry_letra.config(state='normal')
     boton_adivinar.config(state='normal')
 
@@ -205,6 +212,10 @@ def reiniciar_juego():
     if palabra_secreta not in palabras_ganadas:
         palabras_ganadas.append(palabra_secreta)
 
+    # Restaurar las palabras originales en temas_palabras
+    for tema in temas_palabras:
+        # Restaura las palabras originales
+        temas_palabras[tema] = lista_original_palabras[tema][:]
     # Actualizar la interfaz
     actualizar_interfaz()
 
@@ -298,9 +309,6 @@ frame_interno_palabras.bind("<Configure>", ajustar_scroll)
 
 # Lista de widgets para las palabras ganadas
 widgets_palabras = []
-
-# Función para actualizar la lista de palabras ganadas
-
 
 # Etiqueta para mostrar los puntos
 puntos_label = tk.Label(frame_palabras, text="Puntos totales: 0", font=(
