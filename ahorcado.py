@@ -96,6 +96,7 @@ intentos = 6
 tiempo_restante = 300  # 5 minutos en segundos
 palabras_ganadas = []  # Lista de palabras ganadas
 puntos = 0  # Puntos acumulados
+letras_disponibles = 0
 
 # Función para dibujar el muñeco
 
@@ -143,7 +144,7 @@ def actualizar_palabras_ganadas():
 
 def actualizar_interfaz():
     # Declarar la variable global
-    global tiempo_restante, tema_actual, palabra_secreta, letras_adivinadas, letras_incorrectas
+    global tiempo_restante, tema_actual, palabra_secreta, letras_adivinadas, letras_incorrectas, letras_disponibles
 
     tema_label.config(text=f"Tema elegido: {tema_actual}")
     palabra_label.config(text=" ".join(letras_adivinadas))
@@ -164,7 +165,13 @@ def actualizar_interfaz():
 
         global puntos
         puntos += 20  # Sumar puntos por cada palabra ganada
+
+        # Actualizar las letras disponibles al acumular 60 puntos
+        letras_disponibles += puntos // 60
+        puntos %= 60  # Mantén los puntos sobrantes después del canje
+
         puntos_label.config(text=f"Puntos totales: {puntos}")
+        letras_label.config(text=f"Letras disponibles: {letras_disponibles}")
 
         # Actualizar la lista de palabras ganadas en la interfaz
         actualizar_palabras_ganadas()
@@ -342,6 +349,21 @@ def actualizar_temporizador():
         boton_adivinar.config(state='disabled')
 
 
+def canjear_letra():
+    global letras_disponibles, letras_adivinadas, palabra_secreta
+    if letras_disponibles > 0:
+        letra_revelada = random.choice(
+            [l for l, a in zip(palabra_secreta, letras_adivinadas) if a == "_"])
+        for i, l in enumerate(palabra_secreta):
+            if l == letra_revelada:
+                letras_adivinadas[i] = letra_revelada
+        letras_disponibles -= 1
+        letras_label.config(text=f"Letras disponibles: {letras_disponibles}")
+        actualizar_interfaz()
+    else:
+        resultado_label.config(text="¡No tienes letras para canjear!")
+
+
 root = tk.Tk()
 root.title("Juego del Ahorcado DAVID & CLARK")
 root.geometry("1000x700")  # Establecer tamaño inicial de la ventana
@@ -375,6 +397,35 @@ frame_palabras = tk.Frame(root, width=200, height=400,
                           bg="white", relief="ridge", borderwidth=2)
 # Cambiamos de pack() a place(), ajustando x e y
 frame_palabras.place(x=10, y=100)
+
+# Frame para el contenedor de opciones (canjear letra y letras disponibles)
+frame_opciones = tk.Frame(root, width=200, borderwidth=2, relief="solid", bg="white",
+                          highlightbackground="red",  # Color del borde
+                          highlightcolor="red",      # Color del borde cuando está activo
+                          highlightthickness=2        # Grosor del borde
+                          )
+
+frame_opciones.place(x=10, y=frame_palabras.winfo_y() +
+                     frame_palabras.winfo_height() + 10)
+
+boton_canjear = tk.Button(
+    frame_opciones,
+    text="Canjear letra",
+    bg="red",
+    fg="white",
+    font=("Arial", 11, "bold"),  # Fuente en negrita
+    command=canjear_letra
+)
+boton_canjear.pack(anchor='w', padx=10, pady=5)
+
+letras_label = tk.Label(
+    frame_opciones,
+    text="Letras disponibles: 0",
+    fg="red",
+    font=("Arial", 11, "bold")  # Fuente en negrita
+)
+letras_label.pack(anchor='w', padx=10, pady=5)
+
 
 # Título para el cuadro
 titulo_palabras = tk.Label(frame_palabras, text="Palabras ganadas", font=(
@@ -436,6 +487,7 @@ boton_gracias = tk.Button(root, text="Gracias", font=("Arial", 14), bg="red", fg
     "Gracias", "Tu colaboración me ayuda a seguir \nmejorando mis proyectos. Incluso 500 $ ayudan. \nAlias: davidask611"))
 boton_gracias.pack(pady=5)
 
+
 resultado_label = tk.Label(root, text="", font=(
     "Arial", 18), bg="blue", fg="white")
 resultado_label.pack(pady=10)
@@ -443,6 +495,7 @@ resultado_label.pack(pady=10)
 temporizador_label = tk.Label(
     root, text="Tiempo restante: 05:00", font=("Arial", 16), bg="blue", fg="white")
 temporizador_label.pack(pady=5)
+
 
 menu_bar = tk.Menu(root)
 tema_menu = tk.Menu(menu_bar, tearoff=0)
